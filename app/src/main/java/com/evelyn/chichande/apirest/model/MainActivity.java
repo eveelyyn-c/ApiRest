@@ -18,20 +18,25 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity {
 
     ListView list;
     ArrayAdapter arrayAdapter;
-    ArrayList<String> title = new ArrayList<>();
+    ArrayList<String> titulos = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         list=findViewById(R.id.lstViewAlbums);
-        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,title);
+        arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1,titulos);
         list.setAdapter(arrayAdapter);
         getActor();
     }
+
+
+
 
     private void getActor(){
         Retrofit retrofit= new Retrofit.Builder()
@@ -40,20 +45,21 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         ActorService actorService= retrofit.create(ActorService.class);
         Call<List<Actor>> call= actorService.getList();
-        call.enqueue(new Callback<List<Actor>>()
-        {
+        call.enqueue(new Callback<List<Actor>>() {
             @Override
             public void onResponse(Call<List<Actor>> call, Response<List<Actor>> response) {
                 for (Actor actor: response.body()){
-                    title.add(actor.getName());
+                    titulos.add(actor.getName());
                 }
                 arrayAdapter.notifyDataSetChanged();
             }
+
+
+
             @Override
             public void onFailure(Call<List<Actor>> call, Throwable t) {
 
             }
         });
     }
-
 }
